@@ -1,85 +1,88 @@
-
 from collections import deque
+
 class Solution(object):
 
-  
-  # Queue Solution:
-    # We are simulating the exact mechanisms word for word of the question
-  # Big O:
-    # Time: O(n^2) - while loops nested in for loops -> O(n*n)
-    # Space: O(n) - deque() grows with input size
-  def Queue(self, students, sandwiches): 
-    n = len(students) 
-    q = deque(students) # initializae double queue 
-    res = n # number of hungry studets at the start
-    for sandwich in sandwiches: 
-      count = 0 # if count exceeds number of students left then the rest of the students will be hungry 
-      while count < n and q[0] != sandwich:
-        current = q.popleft() # pop the student out of queue
-        q.append(current) # append student back to end of queue
-        count += 1
-      if q[0] == sandwich: 
-        q.popleft()
-        res -= 1
-      else: # We found no remaining students that want this sandwich
-        break # break out and return the hungry students left
-        
-    return res # final number of hungry students
+    # Queue Simulation:
+    # Directly simulates the problem's behavior using a deque.
+    # Time: O(n^2) — for each sandwich, we may rotate through the entire queue.
+    # Space: O(n) — the deque grows with the number of students.
+    def Queue(self, students, sandwiches): 
+        n = len(students)
+        q = deque(students)
+        res = n  # total hungry students at the start
 
+        for sandwich in sandwiches: 
+            count = 0  # tracks how many students we've checked
 
+            # Rotate the queue until we find a matching student or check all
+            while count < n and q[0] != sandwich:
+                q.append(q.popleft())
+                count += 1
 
-  #Itereation Solution: 
-  # Big O:
-      # Time: O(n^2) - while loops nested in for loops -> O(n*n)
-      # Space: O(1) - deque() grows with input size
+            if q and q[0] == sandwich:
+                q.popleft()
+                res -= 1
+            else:
+                break  # No student wants this sandwich
+
+        return res
+
+    # Iterative Index Solution:
+    # Uses an index to simulate a circular queue without extra structures.
+    # Time: O(n^2) — same logic, nested loop.
+    # Space: O(1) — no additional data structures used.
     def IterativeCountStudents(self, students, sandwiches):
-      """
+        """
         :type students: List[int]
         :type sandwiches: List[int]
         :rtype: int
         """
-      n = len(students)
-      index = 0
-      result = n
-      #evaluate each sandwich
-      for sandwich in sandwiches:
-        count = 0 
-        while count < n and students[index] != sandwich: #keep searching students for that sandwich until  we either reach the end of thel ine or find a student with that sandwich preference
-          index +=1 # move on to next student
-          index %= n # wrap the index back to 0 -> SIMULATES CIRCULAR QUEUE without needing a real one 
-          count += 1
-        if students[index] == sandwich: # we found a student for that sandwich
-          students[index] = -1  # set to -1 so we "serve" them again
-          result -= 1 # one less hungry student
-        else: 
-          break # no students were found for the sandwich so remaining are hungry or none hungry
-          
-  # Best solution:
-    # For the sandwich to pop out the stack and the line to continue , there has to be at least one student that wants it
-    # if there are no students left that want the sandwich then the remaining students are left hungry
-  # Big O
-    # Time complexity: O(n), O(n); We iterate through the students once to create the hashmap and another single pass through the sandwiches 
-    # Space complexity: O(1); we created a hashmap but there are only two keys 
-      # - no matter how many students there are, we are only using two memory slots or 'two bins'. only the value is changed, no new space is created
+        n = len(students)
+        index = 0
+        result = n  # number of hungry students
+
+        for sandwich in sandwiches:
+            count = 0
+
+            # Scan for a student who wants this sandwich
+            while count < n and students[index] != sandwich:
+                index = (index + 1) % n  # wrap around like a circular queue
+                count += 1
+
+            if students[index] == sandwich:
+                students[index] = -1  # mark as served
+                result -= 1
+            else:
+                break  # no one left wants this sandwich
+
+        return result
+
+    # Optimal HashMap Solution:
+    # Track how many students prefer each sandwich type.
+    # A sandwich can only be served if someone wants it.
+    # Time: O(n) — one pass for counting, one for serving.
+    # Space: O(1) — only two keys (0 and 1), so space stays constant.
     def frequencyCountStudents(self, students, sandwiches):
         """
         :type students: List[int]
         :type sandwiches: List[int]
         :rtype: int
         """
-      result = len(students) # number of hungry students at beginning
-      count = {} # creating empty hashmap (key:value)
-      #In Python we can use count = Counter(students)
-      for s in students: # loop of counter of student sandwich preferences
-        if s not in count:
-          count[s] = 0 # if preference hasn't been seen before, intialize and set count to zero
-        count[s] += 1 # increment count for this preference
+        result = len(students)
+        count = {}  # preference count: {0: num, 1: num}
 
-      for s in sandwiches: # loop through sandwiches
-        if count[s] > 0: # we have at least one student willing to eat sandwich s
-          result -= 1 # one less hungry student
-          count[s] -= 1 # the student is fed so we don't worry about them anymore
-        else: # no one wants this sandwich 
-          return result 
-          
-      return result # number of hungry students at the end 
+        # Count preferences
+        for s in students:
+            if s not in count:
+                count[s] = 0
+            count[s] += 1
+
+        # Serve sandwiches
+        for s in sandwiches:
+            if count.get(s, 0) > 0:
+                result -= 1
+                count[s] -= 1
+            else:
+                return result  # no one wants this sandwich
+
+        return result
