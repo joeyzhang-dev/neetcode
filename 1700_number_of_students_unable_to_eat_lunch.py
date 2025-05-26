@@ -26,7 +26,34 @@ class Solution(object):
         
     return res # final number of hungry students
 
-    
+
+
+  #Itereation Solution: 
+  # Big O:
+      # Time: O(n^2) - while loops nested in for loops -> O(n*n)
+      # Space: O(1) - deque() grows with input size
+    def IterativeCountStudents(self, students, sandwiches):
+      """
+        :type students: List[int]
+        :type sandwiches: List[int]
+        :rtype: int
+        """
+      n = len(students)
+      index = 0
+      result = n
+      #evaluate each sandwich
+      for sandwich in sandwiches:
+        count = 0 
+        while count < n and students[index] != sandwich: #keep searching students for that sandwich until  we either reach the end of thel ine or find a student with that sandwich preference
+          index +=1 # move on to next student
+          index %= n # wrap the index back to 0 -> SIMULATES CIRCULAR QUEUE without needing a real one 
+          count += 1
+        if students[index] == sandwich: # we found a student for that sandwich
+          students[index] = -1  # set to -1 so we "serve" them again
+          result -= 1 # one less hungry student
+        else: 
+          break # no students were found for the sandwich so remaining are hungry or none hungry
+          
   # Best solution:
     # For the sandwich to pop out the stack and the line to continue , there has to be at least one student that wants it
     # if there are no students left that want the sandwich then the remaining students are left hungry
@@ -34,7 +61,6 @@ class Solution(object):
     # Time complexity: O(n), O(n); We iterate through the students once to create the hashmap and another single pass through the sandwiches 
     # Space complexity: O(1); we created a hashmap but there are only two keys 
       # - no matter how many students there are, we are only using two memory slots or 'two bins'. only the value is changed, no new space is created
-    
     def frequencyCountStudents(self, students, sandwiches):
         """
         :type students: List[int]
