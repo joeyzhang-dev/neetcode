@@ -1,4 +1,4 @@
-# OnePass Hashmap Solution
+# OnePass Hashmap Solution (Best Solution)
 # The matching pair with a number x = x - target
 # To solve this in one pass, we will keep track of numbers we've already seen in a hashmap
 # Each new number, we check if the complement exists in our hashmap
