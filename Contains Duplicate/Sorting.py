@@ -3,7 +3,7 @@
 
 # Time: O(nlogn) 
 # Space: O(1) not counting space used by sorting algorithm
- 
+    # we can sacrifice some space to have a better time complexity with a Hashset
 class Solution:
     def hasDuplicate(self, nums: List[int]) -> bool:
         nums.sort()
