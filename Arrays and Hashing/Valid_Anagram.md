@@ -5,7 +5,7 @@ We will always check this first
 ### Sorting
 **Time: O(nlogn + mlogm)**
 **Space: O(1) or O(m+n)** depending on sorting algo
-```
+```python
 if len(s) != len(t):
 	return False
 	
