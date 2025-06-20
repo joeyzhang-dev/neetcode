@@ -1,7 +1,9 @@
 ## 242. Valid Anagram [link](https://leetcode.com/problems/valid-anagram/)
-> Anagrams just means two words have the same number of specific characters
 **Precondition:** Anagrams are the same length in characters
 We will always check this first
+
+> Anagrams just means two words have the same number of specific characters
+
 
 ### Sorting
 **Time: O(nlogn + mlogm)**
