@@ -1,3 +1,11 @@
+## Summary
+- Check if lengths match (early exit — anagrams must be same length) 
+**Best Solution**
+- hashmap to count each char in str1, decrement for str2
+**Two Hashmap Solution:**   
+- Build two hashmaps: `char → freq`, then compare keys and values
+- Use a Hashmap array
+
 ## 242. Valid Anagram [link](https://leetcode.com/problems/valid-anagram/)
 **Precondition:** Anagrams are the same length in characters
 We will always check this first
@@ -21,9 +29,8 @@ return sorted(s) == sorted(t)
 ### Hashmap
 **Time: O(S+T)**
 **Space: O(1)** since we have at most 26 different characters
-		Using two Hasmaps we can track the # of each characters for both words 
-		then we compare to see if the conditions of a true anagram are met
-		**Hashmap** = Letter:Occurrences 
+Using two Hasmaps we can track the # of each characters for both words then we compare to see if the conditions of a true anagram are met
+**Hashmap** = Letter:Occurrences 
 ```python
 if len(s) != len(t):
 	return False
@@ -44,16 +51,17 @@ return True
 If input is **only lowercase** letters
 
 ```python
+
 if len(s) != len(t):
     return False
 
-countS, countT = {}, {}
+count = [0] * 26
 for i in range(len(s)):
-    countS[s[i]] = 1 + countS.get(s[i], 0)
-    countT[t[i]] = 1 + countT.get(t[i], 0)
+    count[ord(s[i]) - ord('a')] += 1
+    count[ord(t[i]) - ord('a')] -= 1
 
-for c in countS:
-    if countS[c] != countT.get(c, 0):
+for val in count:
+    if val != 0:
         return False
 return True
 
