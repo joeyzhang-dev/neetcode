@@ -20,7 +20,7 @@ return sorted(s) == sorted(t)
 
 ### Hashmap
 **Time: O(S+T)**
-**Space: O(S+T)**
+**Space: O(1)** since we have at most 26 different characters
 		Using two Hasmaps we can track the # of each characters for both words 
 		then we compare to see if the conditions of a true anagram are met
 		**Hashmap** = Letter:Occurrences 
@@ -32,8 +32,29 @@ for i in range(len(s)): # fill in the two hashmaps
 	countS[s[i]] = 1 + countS.get(s[i], 0) #.get has default value in case not initialized
 	countS[t[i]] = 1 + countS.get(t[i], 0)
 for c in countS: # check all the counts are the same
-	if countS[c] != countT.get[c,0]: # .get again in case character mismatch 
+	if countS[c] != countT.get(c,0): # .get again in case character mismatch 
 		return False # return false immediately t
+return True
+
+```
+
+### HashTable using Array
+**Time: O(n+m)**
+**Space: O(1)**
+If input is **only lowercase** letters
+
+```python
+if len(s) != len(t):
+    return False
+
+countS, countT = {}, {}
+for i in range(len(s)):
+    countS[s[i]] = 1 + countS.get(s[i], 0)
+    countT[t[i]] = 1 + countT.get(t[i], 0)
+
+for c in countS:
+    if countS[c] != countT.get(c, 0):
+        return False
 return True
 
 ```
