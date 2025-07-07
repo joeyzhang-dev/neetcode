@@ -71,7 +71,14 @@ class Solution:
 ### Approach 4: Brute Force
 **Time Complexity:** `O(n²)`  
 **Space Complexity:** `O(1)`  
-**Idea:** Check every possible pair of elements to find duplicates.
+**Idea:** Check every possible pair of elements to find duplicates.  
+Even though the inner loop shrinks as `i` increases, the total number of comparisons is:
+
+$$
+\sum_{i=0}^{n-1} (n - i - 1) = \frac{n(n-1)}{2}
+$$
+
+which is still \(O(n^2)\) in Big-O notation.
 
 ```python
 class Solution:
@@ -83,7 +90,7 @@ class Solution:
         return False
 ```
 
-> 🧠 Simple to understand but very inefficient. Only use for educational purposes or when space is extremely limited.
+> 🧠 Simple to understand but very inefficient. The total number of pairwise checks grows quadratically with input size. Only use for educational purposes or very small arrays.
 
 ---
 
