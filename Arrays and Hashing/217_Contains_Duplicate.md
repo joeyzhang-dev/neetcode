@@ -18,19 +18,29 @@
 **Space Complexity:** `O(n)`  
 **Idea:** Use a hashset to keep track of previously seen values. If we encounter a value that's already in the set, we've found a duplicate.
 
+> 💡 A `set()` is a built-in Python data structure that stores **unique values** and provides **O(1)** average-time lookup. It's backed by a **hash table**, and unlike a dictionary, it only tracks **keys**, not key-value pairs.
+
 ```python
 class Solution:
     def hasDuplicate(self, nums: List[int]) -> bool:
-        hashset = set()
+        hashset = set()  # Create an empty set to store unique elements
 
         for n in nums:
             if n in hashset:
+                # If we've already seen this number, it's a duplicate
                 return True
+            # Otherwise, add the number to the set
             hashset.add(n)
+
+        # If we finish the loop without finding duplicates, return False
         return False
 ```
 
-> 🧠 This is the most efficient approach. We trade space for time by using a hashset for O(1) lookups. Early exit when duplicate is found.
+> 🧠 This is the most efficient approach.  
+> - We trade space for time by using a set for constant-time lookups  
+> - No need to count elements or sort the array  
+> - Sets only store **keys**, which is all we need in this case  
+> - Ideal when you want to **track seen elements quickly**
 
 ---
 
