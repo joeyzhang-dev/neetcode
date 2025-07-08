@@ -1,50 +1,44 @@
 ## Summary
-- Use a **hashmap** to store previously seen values and their indices
-- Key insight: for each number, check if its complement (target - current) exists in the hashmap
-- Early exit when complement is found
+- Classic hashmap lookup problem: find two indices such that their values add up to a target.
+- Brute force checks all pairs (slow), but optimal is a one-pass hashmap for `O(n)` time.
+- Key optimization: track each value’s index as you iterate, and check if the complement already exists.
+- Guaranteed one solution, so we can return early on match.
 
-**Best Solution: One-pass hashmap**  
-- Store each number and its index as we iterate, check for complement
+**Best Solution:** One-Pass Hashmap  
+- Efficient because we check and store values in a single pass, enabling `O(1)` lookups per element using a dictionary.
 
 ## [1. Two Sum](https://leetcode.com/problems/two-sum/)
-**Precondition:** Array of integers, exactly one solution exists, cannot use the same element twice
+**Precondition:** Array of integers `nums`, integer `target`, exactly one valid pair exists, cannot use same element twice
 
-> 💡 Find two numbers in the array that add up to the target value and return their indices
+> 💡 Given a list of integers, return the *indices* of the two numbers that add up to a target.
 
 ---
 
-### Approach 1: One-pass Hashmap (Optimal)
+### Approach 1: One-Pass Hashmap
 **Time Complexity:** `O(n)`  
 **Space Complexity:** `O(n)`  
-**Idea:** Use a hashmap to store each number and its index as we iterate. For each new number, check if its complement (target - current) already exists in the hashmap.
+**Idea:** As we iterate through the array, store each value and its index in a hashmap. For each new number, compute its complement (`target - number`) and check if that complement has already been seen.
 
 ```python
 class Solution:
     def twoSum(self, nums: List[int], target: int) -> List[int]:
-        historyMap = {} # val : index
-
+        history = {}
         for i, n in enumerate(nums):
             complement = target - n
-            if complement in historyMap:
-                return [historyMap[complement], i]
-            historyMap[n] = i
+            if complement in history:
+                return [history[complement], i]
+            history[n] = i
         return []
 ```
 
-> 🧠 This is the most efficient approach. We trade space for time by using a hashmap for O(1) lookups. The key insight is that we store each number as we see it, then check if its complement exists.
-
-**Key Points:**
-- `historyMap = {}` stores value → index mapping
-- `complement = target - n` calculates what we need to find
-- `if complement in historyMap` checks if we've seen the complement before
-- `historyMap[n] = i` stores current number and its index for future lookups
+> 🧠 Hashmap gives constant-time lookups. Storing each element after checking avoids using the same element twice. Early exit on match.
 
 ---
 
 ### Approach 2: Brute Force
-**Time Complexity:** `O(n²)`  
+**Time Complexity:** `O(n^2)`  
 **Space Complexity:** `O(1)`  
-**Idea:** Check every possible combination of two numbers using nested loops until we find a pair that sums to the target.
+**Idea:** Check every pair of indices `(i, j)` where `j > i`. If `nums[i] + nums[j] == target`, return `[i, j]`.
 
 ```python
 class Solution:
@@ -56,23 +50,98 @@ class Solution:
         return []
 ```
 
-> 🧠 Simple to understand but very inefficient. Only use for educational purposes or when space is extremely limited.
+> 🧠 Useful for learning or very small input, but becomes slow quickly due to double loop. No extra space needed.
 
 ---
 
 ### Test Cases
 ```python
-# Example test cases
-assert twoSum([2, 7, 11, 15], 9) == [0, 1]
-assert twoSum([3, 2, 4], 6) == [1, 2]
-assert twoSum([3, 3], 6) == [0, 1]
+assert Solution().twoSum([2, 7, 11, 15], 9) == [0, 1]
+assert Solution().twoSum([3, 2, 4], 6) == [1, 2]
+assert Solution().twoSum([3, 3], 6) == [0, 1]
 ```
 
 ---
 
 ### Notes
-- Hashmap approach is optimal for most cases
-- Brute force is only useful for learning or very small arrays
-- The hashmap approach works because we're guaranteed exactly one solution
-- Both approaches handle edge cases correctly
-- Remember that we cannot use the same element twice, but the hashmap approach naturally handles this 
+- Only one solution exists — safe to return on first match.
+- Duplicate values are okay (e.g. `[3, 3]`) because dictionary handles mapping distinct indices.
+- `enumerate(nums)` gives `(index, value)` cleanly.
+- Hashmap stores `value → index`, not the other way around.
+
+---
+
+## 🗣️ Interview-Style Walkthrough (CLEAN Format)
+
+### 🔍 1. Clarify and Understand the Problem
+> “So I’m given a list of integers and a target sum. I need to return the indices of two numbers that add up to the target. Each input will have exactly one solution, and I can’t use the same element twice. Is that correct?”
+
+**✅ Clarified Assumptions:**
+- List is non-empty and has at least two elements
+- There’s always one valid solution
+- Values can be negative or zero
+- Indices must be returned, not the values themselves
+
+---
+
+### 🔬 2. Examples & Edge Cases
+
+**Given Example:**  
+- `nums = [2, 7, 11, 15], target = 9` → `[0, 1]` because 2 + 7 = 9
+
+**Custom Edge Cases:**  
+- `nums = [3, 3], target = 6` → `[0, 1]` (duplicate values)
+- `nums = [-1, -2, -3, -4, -5], target = -8` → `[2, 4]`
+- `nums = [1, 2], target = 3` → `[0, 1]`
+
+---
+
+### 💡 3. Brainstorm Solutions
+
+**Brute Force:**
+> “Loop through all pairs `(i, j)` with `j > i`, check if `nums[i] + nums[j] == target`.”
+
+- Time: `O(n^2)`
+- Space: `O(1)`
+- ✅ Works reliably, no extra structures
+- ❌ Too slow for large inputs
+
+**Optimized Approach: One-Pass Hashmap**
+> “Iterate once, storing each number and index in a dictionary. For each value, compute complement = target - value. If complement is already in the dict, return the pair.”
+
+- Time: `O(n)`
+- Space: `O(n)`
+✅ Fast, handles all cases efficiently  
+🧠 Dictionary allows constant-time lookups
+
+---
+
+### 🧱 4. Implementation Plan (Talk Through Before Typing)
+
+1. Create an empty dictionary `history`
+2. Loop through `nums` with `enumerate` to get index + value
+3. For each number:
+   - Compute complement = `target - num`
+   - If complement is in `history`, return `[history[complement], i]`
+   - Else, store `num: i` in `history`
+4. If no solution found (not expected due to prompt), return `[]`
+
+---
+
+### 🧠 5. Code Complexity Analysis
+
+- **Time Complexity:** `O(n)` — iterate once
+- **Space Complexity:** `O(n)` — in worst case, all elements stored
+
+---
+
+### 🔍 6. Final Review & Wrap-Up
+
+> “This solution is clean, efficient, and leverages a hashmap for constant-time lookup. It handles negative numbers, duplicates, and returns early once a valid pair is found. We avoid re-using the same element because we store only after checking for the complement.”
+
+✅ Passed given and custom tests  
+✅ Discussed brute force vs optimal  
+✅ Offered clarity in edge cases  
+✅ Ready for follow-ups (e.g. return *all* pairs, or handle no solution)
+
+---
