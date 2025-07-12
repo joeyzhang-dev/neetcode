@@ -172,3 +172,40 @@ Final Anagram Groups: [['eat', 'tea', 'ate'], ['tan', 'nat'], ['bat']]
 - What you learned
 - Any mistakes you made or edge cases you missed
 - Patterns to remember for similar problems
+
+
+---
+
+### 🧠 Concept Check: Why Tuples Work as Hash Table Keys (and Lists Don’t)
+
+```python
+res[tuple(count)].append(s)
+```
+
+🔒 **Why not just use `count` (a list) as a key?**
+
+- Python requires **dictionary keys to be hashable**.
+- A key must return a **consistent hash value** — i.e., `hash(key)` must never change.
+- Lists are **mutable** → they can be modified after creation → their hash would change → ❌ unsafe as keys.
+- Tuples are **immutable** → their hash is fixed and consistent → ✅ safe for hash table keys.
+
+---
+
+🧠 **If mutable keys were allowed**, your program could lose track of data.  
+Imagine:
+
+```python
+lst = [1, 2, 3]
+my_dict = {lst: "value"}  # ❌ TypeError: unhashable type: 'list'
+```
+
+If `lst[0] = 9`, then:
+- Its hash would change
+- Python would lose track of the original key → broken dictionary behavior
+
+---
+
+✅ **Takeaway:**
+- Use `tuple()` to convert mutable data (like a list of character counts) into a safe, hashable format.
+- This lets you group anagrams reliably using frequency patterns.
+
