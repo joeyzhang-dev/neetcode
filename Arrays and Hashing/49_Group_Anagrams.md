@@ -179,7 +179,7 @@ Final Anagram Groups: [['eat', 'tea', 'ate'], ['tan', 'nat'], ['bat']]
 **✅ Clarified Assumptions:**
 - Input is a list of lowercase strings
 - Return format is a list of grouped anagram lists (order doesn't matter)
-- Each string can be assumed to contain only a–z
+- Each string contains only letters a–z
 
 ---
 
@@ -209,11 +209,29 @@ Output: `[["eat","tea","ate"],["tan","nat"],["bat"]]`
 **Optimized Approach (Char Count Tuple Signature):**
 - Count frequency of each character (a–z) using a 26-length array
 - Convert that array to a tuple (hashable) and use it as key
-- Time: `O(m * n * 26)`  
+- Time: `O(m * n)`  
 - Space: `O(m * n)`  
 ✅ Best for performance — avoids sorting strings  
-✅ Works even with very long words  
 🧠 [see why tuples](#-concept-check-why-tuples-work-as-hash-table-keys-and-lists-dont)
+
+---
+
+### 🛒 Visualization: The Shopping Cart Analogy
+
+> “Anagrams are like grocery carts — the order you put items in doesn’t matter, only the **contents** matter.”
+
+- `'eat'` = cart with 1 egg, 1 apple, 1 tomato  
+- `'tea'` = same cart, just added in different order  
+- `'tan'` = completely different cart  
+
+We group shoppers with **identical carts** using a **signature** of what’s inside (letter counts or sorted string).
+
+---
+
+### 💡 Quick Tip to Remember
+
+> 🧠 **Anagram = Same letters, different order**  
+> 🔁 Either **sort the letters** or **count them** — that gives you a unique way to group anagram "carts"
 
 ---
 
@@ -250,8 +268,6 @@ Output: `[["eat","tea","ate"],["tan","nat"],["bat"]]`
 ✅ Tuple as key ensures hashability and fast lookups  
 ➡ Could mention alternative solution (sorting) if time remains  
 ➡ Ask if they'd like to see it coded both ways or test extra edge cases
-
-
 
 ---
 
