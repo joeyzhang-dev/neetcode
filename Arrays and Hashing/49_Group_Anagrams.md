@@ -99,6 +99,9 @@ Final Anagram Groups: [['eat', 'tea', 'ate'], ['tan', 'nat'], ['bat']]
 **Idea:** Count the frequency of each character (a-z) in each word.  
 Use the tuple of counts as a hashable key to group anagrams, since anagrams share the same letter frequencies.
 
+Use the tuple of counts as a hashable key to group anagrams, since anagrams share the same letter frequencies — [see why tuples](#-concept-check-why-tuples-work-as-hash-table-keys-and-lists-dont).
+
+
 
 ```python
 class Solution:
