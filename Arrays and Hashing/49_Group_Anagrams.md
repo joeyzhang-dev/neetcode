@@ -8,6 +8,9 @@
 - For each word, count how often each of the 26 letters appears  
 - Use the count tuple as the key, and append the word to the value list
 
+  🛒 **Analogy:**  
+  Anagrams are like two people showing up at checkout with **identical shopping carts** — they may have loaded items in a different order, but they’re buying the **exact same stuff**.
+
 ## [49. Group Anagrams](https://leetcode.com/problems/group-anagrams/)
 **Precondition:** Any known constraints (e.g., "only lowercase letters", "no negative numbers")
 
