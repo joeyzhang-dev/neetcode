@@ -91,7 +91,7 @@ Final Anagram Groups: [['eat', 'tea', 'ate'], ['tan', 'nat'], ['bat']]
 
 ---
 
-### Approach 2: Hast Table
+### Approach 2: Hash Table
 **Time Complexity:** `O(m*n*26)` 
 > n = avg length of input strings, m = # of strings, a-z(26) length of count array
 
