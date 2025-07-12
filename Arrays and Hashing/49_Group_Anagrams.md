@@ -168,13 +168,89 @@ Current Groups: { ... (1, ..., 1): ['eat', 'tea'] }
 Final Anagram Groups: [['eat', 'tea', 'ate'], ['tan', 'nat'], ['bat']]
 ```
 
+---
+
+## 🗣️ Interview-Style Walkthrough (CLEAN Format)
+
+### 🔍 1. Clarify and Understand the Problem
+
+> “Given a list of strings, group the ones that are anagrams of each other.”
+
+**✅ Clarified Assumptions:**
+- Input is a list of lowercase strings
+- Return format is a list of grouped anagram lists (order doesn't matter)
+- Each string can be assumed to contain only a–z
 
 ---
 
-### Notes
-- What you learned
-- Any mistakes you made or edge cases you missed
-- Patterns to remember for similar problems
+### 🔬 2. Examples & Edge Cases
+
+**Given Example:**  
+Input: `["eat","tea","tan","ate","nat","bat"]`  
+Output: `[["eat","tea","ate"],["tan","nat"],["bat"]]`  
+
+**Custom Edge Cases:**  
+- Empty input: `[]` → returns `[]`
+- Single string: `["abc"]` → returns `[["abc"]]`
+- Repeated words: `["a", "a", "a"]` → returns `[["a", "a", "a"]]`
+- Words with no anagrams: `["ab", "cd", "ef"]` → returns `[['ab'], ['cd'], ['ef']]`
+
+---
+
+### 💡 3. Brainstorm Solutions
+
+**Brute Force (Sorting-Based Signature):**
+- Sort each word and group by the sorted string
+- Time: `O(m * nlogn)` → m = number of words, n = word length
+- Space: `O(m * n)`  
+✅ Simple and readable  
+🧠 Slightly slower due to repeated sorting
+
+**Optimized Approach (Char Count Tuple Signature):**
+- Count frequency of each character (a–z) using a 26-length array
+- Convert that array to a tuple (hashable) and use it as key
+- Time: `O(m * n * 26)`  
+- Space: `O(m * n)`  
+✅ Best for performance — avoids sorting strings  
+✅ Works even with very long words  
+🧠 [see why tuples](#-concept-check-why-tuples-work-as-hash-table-keys-and-lists-dont)
+
+---
+
+### 🧱 4. Implementation Plan (Talk Through Before Typing)
+
+1. Create a `defaultdict(list)` to group results
+2. For each word:
+   - Initialize a 26-element array of 0s
+   - Count each letter’s frequency
+   - Convert the array to a tuple (immutable, hashable)
+   - Use that tuple as a key to group words
+3. Return the dictionary values as a list of lists
+
+---
+
+### 🧠 5. Code Complexity Analysis
+
+**Optimized Tuple Count Solution:**
+
+- **Time Complexity:** `O(m * n)`  
+  - Counting letters takes O(n) per word
+  - m words → O(m * n)
+
+- **Space Complexity:** `O(m * n)`  
+  - Grouped strings take space
+  - Dict keys (tuples) and values (lists of words)
+
+---
+
+### 🔍 6. Final Review & Wrap-Up
+
+✅ Clean code with edge cases covered  
+✅ Time-optimized (no sorting)  
+✅ Tuple as key ensures hashability and fast lookups  
+➡ Could mention alternative solution (sorting) if time remains  
+➡ Ask if they'd like to see it coded both ways or test extra edge cases
+
 
 
 ---
