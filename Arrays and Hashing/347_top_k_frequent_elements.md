@@ -53,6 +53,52 @@ class Solution:
 
 ---
 
+### 🔍 Step-by-Step Visualization
+
+Example: `nums = [1, 1, 1, 2, 2, 3]`, `k = 2`
+
+**1. Build frequency map:**
+
+```python
+count = {
+    1: 3,
+    2: 2,
+    3: 1
+}
+```
+
+**2. Convert to sortable array:**
+
+```python
+arr = [
+    [3, 1],
+    [2, 2],
+    [1, 3]
+]
+```
+
+**3. Sort ascending by frequency:**
+
+```python
+arr = [
+    [1, 3],
+    [2, 2],
+    [3, 1]
+]
+```
+
+**4. Pop last **``** entries:**
+
+```python
+res = []
+# First pop → [3, 1] → res = [1]
+# Second pop → [2, 2] → res = [1, 2]
+```
+
+✅ Final result: `[1, 2]`
+
+---
+
 ### Test Cases
 
 ```python
