@@ -18,12 +18,12 @@
 
 - Return the `k` most frequent elements in an integer list.
 - ✅ Use a frequency map (hashmap) to count occurrences.
-- ✅ Use either:
-  - Sort by frequency (O(n log n))
-  - Min heap of size `k` (O(n log k)) ← optimal for large input
+- ✅ Two good approaches:
+  - **Sort all frequencies**, then grab top-k → clean but O(n log n)
+  - **Min heap of size `k`** → avoids sorting everything, better for large `n`
 
 **Best Solution:** Hash Map + Min Heap  
-Efficiently tracks top-k elements without sorting all frequencies.
+Efficient when `k` is small and input size is large.
 
 ---
 
@@ -40,53 +40,85 @@ Efficiently tracks top-k elements without sorting all frequencies.
 
 ## 🔎 Approach 1: Hash Map + Sort
 
-**Time Complexity:** `O(n log n)`  
-**Space Complexity:** `O(n)`
+### 🧠 Idea (What’s Going On)
+
+- First, **count how often each number appears** using a dictionary (hashmap)
+- Store the results as `[frequency, number]` pairs in a list
+- **Sort the list** by frequency (ascending), then pop off the last `k` elements
+
+This is easy to understand and works fine if `n` isn’t too large.
+
+---
+
+**Time Complexity:** `O(n log n)` — due to sorting  
+**Space Complexity:** `O(n)` — to store the frequency map and array
 
 ```python
 class Solution:
     def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+        # Step 1: Count frequencies
         count = {}
         for num in nums:
             count[num] = 1 + count.get(num, 0)
+            # If num not in count, start at 0 → then add 1
 
+        # Step 2: Create list of [frequency, number] pairs
         arr = []
         for num, freq in count.items():
             arr.append([freq, num])
-        arr.sort()  # sort by frequency ascending
 
+        # Step 3: Sort by frequency ascending
+        arr.sort()
+
+        # Step 4: Pop k most frequent
         res = []
         while len(res) < k:
-            res.append(arr.pop()[1])  # pop most frequent
+            res.append(arr.pop()[1])  # grab the number, not the frequency
         return res
 ```
 
-> ✅ Sort by frequency and pop last `k` elements.
+> 🧠 Tip: `[freq, num]` ensures sort is based on frequency first.
 
 ---
 
 ## ⚙️ Approach 2: Hash Map + Min Heap
+
+### 🧠 Idea (What’s Going On)
+
+- Again, use a dictionary to **count frequencies**
+- Then use a **min heap of size `k`** to track only the most frequent elements:
+  - Push `(frequency, number)` into the heap
+  - If the heap grows beyond size `k`, pop the least frequent
+- At the end, you’re left with the top `k`
+
+This avoids sorting the entire list — great for large datasets.
+
+---
 
 **Time Complexity:** `O(n log k)`  
 **Space Complexity:** `O(n)`
 
 ```python
 import heapq
+
 class Solution:
     def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+        # Step 1: Frequency map
         count = {}
         for num in nums:
             count[num] = 1 + count.get(num, 0)
 
+        # Step 2: Push (freq, num) to heap
         heap = []
         for num in count:
-            heapq.heappush(heap, (count[num], num))  # (frequency, number)
+            heapq.heappush(heap, (count[num], num))
             if len(heap) > k:
-                heapq.heappop(heap)
+                heapq.heappop(heap)  # remove smallest freq
 
+        # Step 3: Extract results
         res = []
         while heap:
-            res.append(heapq.heappop(heap)[1])
+            res.append(heapq.heappop(heap)[1])  # just the number
         return res
 ```
 
@@ -103,7 +135,6 @@ A data structure that stores key-value pairs. Example: `{num: frequency}`.
 count[num] = 1 + count.get(num, 0)
 ```
 This line increments the frequency if it exists, otherwise sets it to 1.
-
 </details>
 
 <details>
@@ -125,14 +156,14 @@ Step-by-step heap state:
 
 ```text
 Push (3, 1):         [(3, 1)]
-Push (2, 2):         [(2, 2), (3, 1)]      ← valid (size ≤ k)
+Push (2, 2):         [(2, 2), (3, 1)]
 Push (1, 3):         [(1, 3), (3, 1), (2, 2)]
-   → size > 2 → pop (1, 3)
+→ size > 2 → pop (1, 3)
 
 Final heap:          [(2, 2), (3, 1)]
 ```
 
-🧠 This keeps only the top `k` frequent elements by evicting the least frequent when the heap exceeds size `k`.
+🧠 This keeps only the top `k` frequent elements.
 
 </details>
 
@@ -141,8 +172,7 @@ Final heap:          [(2, 2), (3, 1)]
 
 - Tuples use parentheses: `(a, b)`  
 - Lists use brackets: `[a, b]`  
-Tuples are often used in heaps because they are immutable and support element-wise comparison.
-
+Tuples are used in heaps because they’re immutable and sort element-wise.
 </details>
 
 ---
@@ -160,9 +190,9 @@ assert set(Solution().topKFrequent([4,4,4,4,5,5,5,6,6], 2)) == set([4,5])
 ## 🧱 Interview Walkthrough (CLEAN)
 
 ### 🔍 1. Clarify
-- ✅ `k` is valid
-- ✅ Return order doesn't matter
-- ✅ nums may have duplicates
+- ✅ k is valid and ≤ number of unique elements
+- ✅ Return order doesn’t matter
+- ✅ nums may contain duplicates
 
 ### 🔬 2. Examples
 ```python
@@ -172,31 +202,31 @@ nums = [1,2,3,4], k = 2 → any 2 values
 ```
 
 ### 💡 3. Brainstorm
-- Brute force: sort and count manually — ❌ too slow
-- Hashmap + sort by freq — ✅ clean
+- Brute force: sort + count — ❌ inefficient
+- Hashmap + sort — ✅ simple and works
 - Hashmap + heap — ✅ optimal if `k << n`
 
-### 🧱 4. Implementation Plan
-1. Build a frequency map using `count[num] = 1 + count.get(num, 0)`
-2. Push each `(freq, num)` into a min heap
-3. Keep size ≤ `k` by popping smallest
-4. Extract elements from heap
+### 🧱 4. Plan
+1. Count frequencies using a dict
+2. Push `(frequency, number)` into a min heap
+3. If heap > k, pop the smallest
+4. Extract numbers from heap
 
 ### 🧠 5. Complexity
 - Time: `O(n log k)`
 - Space: `O(n)`
 
 ### ✅ 6. Wrap-Up
-Used frequency counting and a heap to keep the top `k` frequent elements. Avoided full sorting for better performance.
+Used heap to avoid full sort and extract the top `k` most frequent efficiently.
 
 ---
 
 ## ❌ Common Pitfalls
 
 - Confusing tuple `(1, 3)` with list `[1, 3]`
-- Forgetting `heapq` is a **min heap** by default
-- Not popping when heap size > k
-- Sorting the whole list when only top `k` needed
+- Not understanding that `heapq` is a min heap by default
+- Forgetting to pop when heap size > k
+- Sorting all elements instead of tracking only `k`
 
 ---
 
