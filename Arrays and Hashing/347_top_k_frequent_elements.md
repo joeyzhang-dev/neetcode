@@ -2,11 +2,13 @@
 
 - Problem: Return the `k` most frequent elements in a list of integers.
 - Naive idea: Sort the array and count streaks manually — not efficient.
-- Optimal idea: Use a hash map to count frequencies, then sort by frequency.
+- Optimal idea: Use a hash map to count frequencies, then either:
+  - Sort the entries by frequency (O(n log n))
+  - Use a heap to keep only top k (O(n log k))
 
-**Best Solution:** Hash Map + Frequency Sort
+**Best Solution:** Hash Map + Min Heap
 
-- Count frequencies using a dictionary, then sort and return the top `k` most frequent elements. This is simple, modular, and scales well.
+- Count frequencies using a dictionary, then push (frequency, number) pairs into a min-heap of size `k`. The heap always keeps the top `k` most frequent elements, and we return them at the end.
 
 ## [347. Top K Frequent Elements](https://leetcode.com/problems/top-k-frequent-elements/)
 
@@ -18,15 +20,14 @@
 
 ### Approach 1: Hash Map + Sort
 
-**Time Complexity:** `O(n log n)` – sorting the array of unique elements based on frequency.\
-**Space Complexity:** `O(n)` – for frequency map and temporary arrays.
+**Time Complexity:** `O(n log n)`  
+**Space Complexity:** `O(n)`
 
 **Idea:**
-
 1. Count frequencies using a dictionary `count[num] = frequency`
-2. Turn `count.items()` into a list of `[freq, num]` pairs
-3. Sort the list in ascending frequency
-4. Pop the last `k` elements (highest frequencies)
+2. Convert count map to a list of `[freq, num]`
+3. Sort the list by frequency
+4. Pop the top `k` from the end
 
 ```python
 class Solution:
@@ -34,151 +35,142 @@ class Solution:
         count = {}
         for num in nums:
             count[num] = 1 + count.get(num, 0)
-            # if new key, add with value 1
-            # if existing, increment
 
         arr = []
         for num, freq in count.items():
             arr.append([freq, num])
-        arr.sort()  # sort by freq ascending
+        arr.sort()  # ascending by freq
 
         res = []
         while len(res) < k:
-            res.append(arr.pop()[1])  # pop most frequent
-
+            res.append(arr.pop()[1])
         return res
 ```
 
-> 🧠 We use `[freq, num]` to sort by frequency first, then extract the number.
+---
+
+### Approach 2: Hash Map + Min Heap (Optimal for large `n`, small `k`)
+
+**Time Complexity:** `O(n log k)`  
+**Space Complexity:** `O(n)`
+
+**Idea:**
+1. Build a **frequency map** using a dictionary
+2. Use a **min heap** (priority queue) to maintain top `k` most frequent elements
+3. Heap stores **tuples** `(freq, num)` so the least frequent is always on top
+4. Pop all elements from the heap to get the top `k`
+
+```python
+import heapq
+class Solution:
+    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+        count = {}
+        for num in nums:
+            count[num] = 1 + count.get(num, 0)
+            # Dictionary: key → num, value → frequency
+
+        heap = []
+        for num in count:
+            heapq.heappush(heap, (count[num], num))  # push tuple
+            if len(heap) > k:
+                heapq.heappop(heap)  # remove least frequent
+
+        res = []
+        while heap:
+            res.append(heapq.heappop(heap)[1])
+        return res
+```
 
 ---
 
-### 🔍 Step-by-Step Visualization
+### 🔍 DSA Concepts Explained
 
-Example: `nums = [1, 1, 1, 2, 2, 3]`, `k = 2`
-
-**1. Build frequency map:**
-
+**🧩 Dictionary / Hash Map**  
+Maps keys to values efficiently.  
+Example:  
 ```python
-count = {
-    1: 3,
-    2: 2,
-    3: 1
-}
+count = {}
+count[3] = 1
 ```
+means `count` maps `3 → 1`.
 
-**2. Convert to sortable array:**
+**🧩 `count.get(num, 0)`**  
+Returns the count of `num` if it exists; returns 0 if not.  
+Used to avoid `KeyError`.
 
-```python
-arr = [
-    [3, 1],
-    [2, 2],
-    [1, 3]
-]
-```
+**🧩 Tuple `(freq, num)`**  
+A **tuple** is a fixed-size grouping in Python using parentheses.  
+This tuple is used in the heap so we can compare by frequency (`heapq` compares first item in tuple).
 
-**3. Sort ascending by frequency:**
-
-```python
-arr = [
-    [1, 3],
-    [2, 2],
-    [3, 1]
-]
-```
-
-**4. Pop last **``** entries:**
-
-```python
-res = []
-# First pop → [3, 1] → res = [1]
-# Second pop → [2, 2] → res = [1, 2]
-```
-
-✅ Final result: `[1, 2]`
+**🧩 Min Heap (`heapq`)**  
+Python’s built-in heap implementation is a **min-heap**.  
+By default, `heapq.heappop()` removes the **smallest** element.  
+We use this to evict the lowest frequency when the heap size exceeds `k`.
 
 ---
 
 ### Test Cases
 
 ```python
-assert Solution().topKFrequent([1,1,1,2,2,3], 2) in [[1,2], [2,1]]
+assert set(Solution().topKFrequent([1,1,1,2,2,3], 2)) == set([1,2])
 assert Solution().topKFrequent([1], 1) == [1]
-assert Solution().topKFrequent([4,4,4,4,5,5,5,6,6], 2) in [[4,5], [5,4]]
+assert set(Solution().topKFrequent([4,4,4,4,5,5,5,6,6], 2)) == set([4,5])
 ```
 
 ---
 
-### Notes
+### Interview-Style Walkthrough (CLEAN Format)
 
-- Avoid the naive idea of sorting and manually counting streaks — it's verbose and error-prone.
-- Using `count[num] = 1 + count.get(num, 0)` avoids needing conditionals to initialize.
-- Sorting `[freq, num]` makes it easy to grab top-k using `.pop()`.
+#### 🔍 1. Clarify the Problem
+> “Return the `k` most frequent elements from an integer list. Order doesn’t matter.”
 
----
-
-## 🔍 Interview-Style Walkthrough (CLEAN Format)
-
-### 🔍 1. Clarify and Understand the Problem
-
-> "Given a list of integers, return the top `k` most frequent elements. Order doesn’t matter."
-
-**✅ Clarified Assumptions:**
-
-- k is always <= number of unique elements
-- nums may have duplicates
-- Return order doesn't matter
+- ✅ `k` is valid
+- ✅ Duplicates allowed
+- ✅ Return any order
 
 ---
 
-### 🔬 2. Examples & Edge Cases
+#### 🔬 2. Examples & Edge Cases
 
-**Given Example:**\
-`nums = [1,1,1,2,2,3], k = 2` → `[1,2]` or `[2,1]`
-
-**Custom Edge Cases:**
-
-- All elements same → `[1,1,1,1], k = 1` → `[1]`
-- Each element unique → `[1,2,3,4], k = 2` → any two numbers
+```python
+[1,1,1,2,2,3], k = 2 → [1,2] or [2,1]
+[1], k = 1 → [1]
+[1,2,3,4], k = 2 → any 2 values
+```
 
 ---
 
-### 💡 3. Brainstorm Solutions
+#### 💡 3. Brainstorm
 
-**Brute Force:**
-
-- Sort nums, walk through and manually count streaks
-- Compare streaks to maintain top-k
-- ❌ Too verbose, requires full sort `O(n log n)` and edge-case juggling
-
-**Optimized Approach:**
-
-- Count with hashmap `O(n)`
-- Sort by frequency `O(m log m)` where m = number of unique elements
-- Extract top-k via pop
-- ✅ Much cleaner and easier to reason about
+- Brute: sort and count manually (O(n log n))
+- Sort: use hashmap + list + sort (O(n log n))
+- Heap: hashmap + min-heap of size k (O(n log k)) ✅ best for large inputs
 
 ---
 
-### 🧱 4. Implementation Plan (Talk Through Before Typing)
+#### 🧱 4. Plan
 
-1. Count each number’s frequency using a dict
-2. Build a list of [freq, num] for sorting
-3. Sort ascending
-4. Pop last k elements’ num values
-
----
-
-### 🧠 5. Code Complexity Analysis
-
-- **Time:** `O(n + m log m)`
-  - `n` for frequency counting
-  - `m log m` to sort unique elements
-- **Space:** `O(n)` for dict + result
+1. Use a dict to count `num → frequency`
+2. Push `(freq, num)` into heap
+3. Keep size ≤ `k` by popping smallest
+4. Extract final result from heap
 
 ---
 
-### 🔍 6. Final Review & Wrap-Up
+#### 🧠 5. Complexity
 
-> “This solution uses a frequency map to count occurrences in linear time, then sorts the frequency list and pops the top-k most frequent elements. It avoids the fragility of manual streak logic and performs well for typical constraints.”
+- **Time:** O(n log k)
+- **Space:** O(n)
 
+---
+
+#### ✅ 6. Wrap-Up
+
+This problem reinforces:
+- Tuple usage in Python
+- Frequency counting with `get`
+- Heap-based prioritization for top-k problems
+
+Prefer this approach when `n` is large and `k` is small.
+
+---
