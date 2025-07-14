@@ -1,124 +1,132 @@
-## Summary
-- Summarize the problem and key takeaways in 2-4 bullets.
-- Mention early exits or optimizations.
-- Note the most optimal approach and why it works best.
+## 📋 Table of Contents
 
-**Best Solution:** <Insert Best Approach Title>  
-- Briefly explain what the optimal solution does and why it’s efficient.
-
-## [<Problem Number>. <Problem Title>](<LeetCode Link>)
-**Precondition:** List any constraints or guarantees from the prompt.
-
-> 💡 Restate the problem in 1 sentence as an insight or transformation
+- [🧠 Summary](#🧠-summary)
+- [📄 Problem Statement](#📄-problem-statement)
+- [🔎 Approach 1](#🔎-approach-1)
+- [⚙️ Approach 2 (if any)](#⚙️-approach-2-if-any)
+- [📚 DSA Concepts Explained](#📚-dsa-concepts-explained)
+- [🧪 Test Cases](#🧪-test-cases)
+- [🧱 Interview Walkthrough (CLEAN)](#🧱-interview-walkthrough-clean)
+- [❌ Common Pitfalls](#❌-common-pitfalls)
+- [📚 Glossary](#📚-glossary)
 
 ---
 
-### Approach 1: <Approach Name>
-**Time Complexity:** `O(...)`  
-**Space Complexity:** `O(...)`  
-**Idea:** Describe the high-level approach in 1-2 sentences.
+## 🧠 Summary
+
+- Brief 2-4 bullet summary of the problem and key idea
+- What data structures or algorithms are involved?
+- Time/space tradeoffs
+
+**Best Solution:**&#x20;
+
+- One-liner why this is optimal
+
+---
+
+## 📄 Problem Statement
+
+[LeetCode Link](insert-leetcode-url)
+
+> Restate the problem in plain English
+
+**Constraints:**
+
+-
+
+---
+
+## 🔎 Approach 1:&#x20;
+
+### 🧠 Idea (What’s Going On)
+
+- Short learner-friendly explanation
+- Steps in plain language
+
+**Time Complexity:** `O(...)`\
+**Space Complexity:** `O(...)`
 
 ```python
-# Insert code here
+# Paste solution with helpful comments and structure
 ```
 
-> 🧠 Add any reasoning about tradeoffs, why it works well, or common mistakes
+> 🧠 Tip: Add reasons for choices (e.g., why sort, why dict, etc.)
 
 ---
 
-### Approach 2: <Optional Second Approach>
-**Time Complexity:** `O(...)`  
-**Space Complexity:** `O(...)`  
-**Idea:** Describe alternate solution for learning/comparison.
+## ⚙️ Approach 2 (if any):&#x20;
+
+### 🧠 Idea
+
+- Alternate idea explanation
+
+**Time Complexity:** `O(...)`\
+**Space Complexity:** `O(...)`
 
 ```python
-# Insert alternate code here
+# Paste code and describe each step
 ```
 
-> 🧠 When to use this approach or why it’s suboptimal compared to best
+> 🕵️‍♂️ When this approach is better/worse
 
 ---
 
-### Approach 3: <Optional Third Approach>
-...
+## 📚 DSA Concepts Explained
+
+(Add more as needed)
 
 ---
 
-### Test Cases
+## 🧪 Test Cases
+
 ```python
-# Add relevant test cases
+assert Solution().fn(...) == ...
+# Add diverse edge and normal cases
 ```
 
 ---
 
-### Notes
-- List gotchas, constraints, or summary notes
-- Highlight differences between approaches
-- Add reminders for future self
+## 🧱 Interview Walkthrough (CLEAN)
+
+### 🔍 1. Clarify
+
+- Assumptions, input/output, edge cases
+
+### 🔬 2. Examples
+
+- Provided + 1-2 of your own
+
+### 💡 3. Brainstorm
+
+- Naive vs optimized ideas
+
+### 🧰 4. Plan
+
+- Step-by-step breakdown before coding
+
+### 🧠 5. Complexity
+
+- Time and space discussion
+
+### ✅ 6. Wrap-up
+
+- Recap strengths, edge case coverage, invite follow-ups
 
 ---
 
-## 🗣️ Interview-Style Walkthrough (CLEAN Format)
+## ❌ Common Pitfalls
 
-### 🔍 1. Clarify and Understand the Problem
-> “Rephrase the prompt clearly, confirm assumptions, and ask clarifying questions.”
-
-**✅ Clarified Assumptions:**
-- List constraints confirmed during clarification
+- What people often get wrong
+- Subtle edge cases or traps
 
 ---
 
-### 🔬 2. Examples & Edge Cases
+## 📚 Glossary
 
-**Given Example:**  
-`"..."` and `"..."` → ✅ True  
-...
+| Term          | Meaning |
+| ------------- | ------- |
+| Hash Map      | ...     |
+| Tuple         | ...     |
+| Min Heap      | ...     |
+| Frequency Map | ...     |
 
-**Custom Edge Cases:**  
-- `("", "")` →  
-- `("a", "a")` →  
-- Large input edge case →  
-
----
-
-### 💡 3. Brainstorm Solutions
-
-**Brute Force:**
-> “Describe a simple but suboptimal idea to build from.”
-
-- Time: `O(...)`
-- Space: `O(...)`
-- ✅ When useful: ...
-
-**Optimized Approach:**
-> “Describe and justify your best solution.”
-
-- Time: `O(...)`
-- Space: `O(...)`
-
-✅ Best for this problem type  
-🧠 Mention tradeoffs or other edge case considerations
-
----
-
-### 🧱 4. Implementation Plan (Talk Through Before Typing)
-
-1. Step-by-step plan
-2. Key algorithm logic
-3. Data structures used
-4. Mapping or helper functions (e.g. `ord()`)
-
----
-
-### 🧠 5. Code Complexity Analysis
-
-- **Time Complexity:** `O(...)`  
-- **Space Complexity:** `O(...)`
-
----
-
-### 🔍 6. Final Review & Wrap-Up
-
-> “Recap solution, edge case coverage, and next steps if needed.”
-
-✅ Confident ending. Always offer test coverage, alternate solutions, or ask the interviewer if they’d like anything expanded.
