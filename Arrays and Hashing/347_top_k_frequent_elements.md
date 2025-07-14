@@ -95,7 +95,7 @@ This avoids sorting the entire list — great for large datasets.
 
 ---
 
-**Time Complexity:** `O(n log k)`  
+**Time Complexity:** `O(k log n)`  
 **Space Complexity:** `O(n)`
 
 ```python
