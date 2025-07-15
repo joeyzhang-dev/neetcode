@@ -6,11 +6,11 @@
 - [📄 Problem Statement](#-problem-statement)
 - [🔎 Approach 1: Hash Map + Sort](#-approach-1-hash-map--sort)
 - [⚙️ Approach 2: Hash Map + Min Heap](#-approach-2-hash-map--min-heap)
-- [📘 DSA Concepts Explained](#-dsa-concepts-explained)
+- [📜 DSA Concepts Explained](#-dsa-concepts-explained)
 - [🧪 Test Cases](#-test-cases)
 - [🧱 Interview Walkthrough (CLEAN)](#-interview-walkthrough-clean)
 - [❌ Common Pitfalls](#-common-pitfalls)
-- [📘 Glossary](#-glossary)
+- [📜 Glossary](#-glossary)
 
 ---
 
@@ -20,19 +20,21 @@
 - ✅ Use a frequency map (hashmap) to count occurrences.
 - ✅ Two good approaches:
   - **Sort all frequencies**, then grab top-k → clean but O(n log n)
-  - **Min heap of size `k`** → avoids sorting everything, better for large `n`
+  - **Min heap of size **`` → avoids sorting everything, better for large `n`
 
-**Best Solution:** Hash Map + Min Heap  
+**Best Solution:** Hash Map + Min Heap\
 Efficient when `k` is small and input size is large.
 
 ---
 
 ## 📄 Problem Statement
 
-[🔗 LeetCode 347](https://leetcode.com/problems/top-k-frequent-elements/)  
+[🔗 LeetCode 347](https://leetcode.com/problems/top-k-frequent-elements/)
+
 > Given an integer array `nums` and an integer `k`, return the `k` most frequent elements. Return the answer in **any order**.
 
 **Constraints:**
+
 - 1 <= nums.length <= 10⁵
 - 1 <= k <= number of unique elements
 
@@ -50,7 +52,7 @@ This is easy to understand and works fine if `n` isn’t too large.
 
 ---
 
-**Time Complexity:** `O(n log n)` — due to sorting  
+**Time Complexity:** `O(n log n)` — due to sorting\
 **Space Complexity:** `O(n)` — to store the frequency map and array
 
 ```python
@@ -60,7 +62,6 @@ class Solution:
         count = {}
         for num in nums:
             count[num] = 1 + count.get(num, 0)
-            # If num not in count, start at 0 → then add 1
 
         # Step 2: Create list of [frequency, number] pairs
         arr = []
@@ -73,7 +74,7 @@ class Solution:
         # Step 4: Pop k most frequent
         res = []
         while len(res) < k:
-            res.append(arr.pop()[1])  # grab the number, not the frequency
+            res.append(arr.pop()[1])
         return res
 ```
 
@@ -86,7 +87,7 @@ class Solution:
 ### 🧠 Idea (What’s Going On)
 
 - Again, use a dictionary to **count frequencies**
-- Then use a **min heap of size `k`** to track only the most frequent elements:
+- Then use a **min heap of size **`` to track only the most frequent elements:
   - Push `(frequency, number)` into the heap
   - If the heap grows beyond size `k`, pop the least frequent
 - At the end, you’re left with the top `k`
@@ -95,7 +96,7 @@ This avoids sorting the entire list — great for large datasets.
 
 ---
 
-**Time Complexity:** `O(k log n)`  
+**Time Complexity:** `O(k log n)`\
 **Space Complexity:** `O(n)`
 
 ```python
@@ -124,21 +125,15 @@ class Solution:
 
 ---
 
-## 📘 DSA Concepts Explained
-
-<details>
-<summary>🔹 Hash Map (Dictionary)</summary>
+## 📜 DSA Concepts Explained
 
 A data structure that stores key-value pairs. Example: `{num: frequency}`.
 
 ```python
 count[num] = 1 + count.get(num, 0)
 ```
-This line increments the frequency if it exists, otherwise sets it to 1.
-</details>
 
-<details>
-<summary>🔹 Min Heap (heapq)</summary>
+This line increments the frequency if it exists, otherwise sets it to 1.
 
 A binary heap where the smallest value stays at the top.
 
@@ -149,7 +144,7 @@ heapq.heappush(heap, (freq, num))
 heapq.heappop(heap)
 ```
 
-📊 **Heap Growth Example:**  
+📊 **Heap Growth Example:**\
 For input `nums = [1,1,1,2,2,3]`, `k = 2`
 
 Step-by-step heap state:
@@ -165,15 +160,9 @@ Final heap:          [(2, 2), (3, 1)]
 
 🧠 This keeps only the top `k` frequent elements.
 
-</details>
-
-<details>
-<summary>🔹 Tuple vs List</summary>
-
-- Tuples use parentheses: `(a, b)`  
-- Lists use brackets: `[a, b]`  
-Tuples are used in heaps because they’re immutable and sort element-wise.
-</details>
+- Tuples use parentheses: `(a, b)`
+- Lists use brackets: `[a, b]`\
+  Tuples are used in heaps because they’re immutable and sort element-wise.
 
 ---
 
@@ -190,11 +179,13 @@ assert set(Solution().topKFrequent([4,4,4,4,5,5,5,6,6], 2)) == set([4,5])
 ## 🧱 Interview Walkthrough (CLEAN)
 
 ### 🔍 1. Clarify
+
 - ✅ k is valid and ≤ number of unique elements
 - ✅ Return order doesn’t matter
 - ✅ nums may contain duplicates
 
 ### 🔬 2. Examples
+
 ```python
 nums = [1,1,1,2,2,3], k = 2 → [1,2]
 nums = [1], k = 1 → [1]
@@ -202,21 +193,25 @@ nums = [1,2,3,4], k = 2 → any 2 values
 ```
 
 ### 💡 3. Brainstorm
+
 - Brute force: sort + count — ❌ inefficient
 - Hashmap + sort — ✅ simple and works
 - Hashmap + heap — ✅ optimal if `k << n`
 
 ### 🧱 4. Plan
+
 1. Count frequencies using a dict
 2. Push `(frequency, number)` into a min heap
 3. If heap > k, pop the smallest
 4. Extract numbers from heap
 
 ### 🧠 5. Complexity
+
 - Time: `O(n log k)`
 - Space: `O(n)`
 
 ### ✅ 6. Wrap-Up
+
 Used heap to avoid full sort and extract the top `k` most frequent efficiently.
 
 ---
@@ -230,12 +225,13 @@ Used heap to avoid full sort and extract the top `k` most frequent efficiently.
 
 ---
 
-## 📘 Glossary
+## 📜 Glossary
 
-| Term               | Meaning |
-|--------------------|---------|
+| Term                | Meaning                                              |
+| ------------------- | ---------------------------------------------------- |
 | Hash Map / Dict     | Stores key-value pairs, like `{3: 2}` for num → freq |
-| Min Heap            | Priority queue where smallest value stays on top |
-| Tuple `(a, b)`      | Immutable pair of values, used in heap comparison |
-| Frequency Map       | Another term for `count` dictionary |
+| Min Heap            | Priority queue where smallest value stays on top     |
+| Tuple `(a, b)`      | Immutable pair of values, used in heap comparison    |
+| Frequency Map       | Another term for `count` dictionary                  |
 | `get(key, default)` | Returns the value for `key`, or `default` if missing |
+
