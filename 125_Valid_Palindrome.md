@@ -1,15 +1,13 @@
 ## 📋 Table of Contents
 
-- [🧠 Summary](#🧠-summary)
-- [📄 Problem Statement](#📄-problem-statement)
-- [🔎 Approach 1](#🔎-approach-1)
-- [⚙️ Approach 2 (if any)](#⚙️-approach-2-if-any)
-- [📚 DSA Concepts Explained](#📚-dsa-concepts-explained)
-- [🧪 Test Cases](#🧪-test-cases)
-- [🧱 Interview Walkthrough (CLEAN)](#🧱-interview-walkthrough-clean)
-- [❌ Common Pitfalls](#❌-common-pitfalls)
-- [📚 Glossary](#📚-glossary)
-
+- [🧠 Summary](#-summary)
+- [📄 Problem Statement](#-problem-statement)
+- [🔎 Approach 1: Brute Force with Filter + Reverse](#-approach-1-brute-force-with-filter--reverse)
+- [⚙️ Approach 2: Two Pointer In-Place](#-approach-2-two-pointer-in-place)
+- [🔁 Two Pointer Diagram Walkthrough](#-two-pointer-diagram-walkthrough)
+- [📚 DSA Concepts Explained](#-dsa-concepts-explained)
+- [🧪 Test Cases](#-test-cases)
+- [🧱 Interview Walkthrough (CLEAN)](#-interview-walkthrough-clean)
 ---
 
 ## 🧠 Summary
@@ -184,61 +182,179 @@ Every comparison matched → `True` ✅
 
 ## 📚 DSA Concepts Explained
 
+<details>
+<summary>🔹 Two Pointer Technique</summary>
+
+Move two indices inward from both ends of the input. Useful when checking symmetric properties (like palindromes) or when minimizing space by avoiding new strings/lists.
+
+</details>
+
+<details>
+<summary>🔹 String Filtering with `isalnum()`</summary>
+
+The `str.isalnum()` method checks if a character is alphanumeric (a-z, A-Z, 0-9). It's used to ignore punctuation and spaces during comparison.
+
+</details>
+
+<details>
+<summary>🔹 Case Normalization</summary>
+
+Use `str.lower()` (or `str.upper()`) to standardize characters before comparison to make the algorithm case-insensitive.
+
+</details>
+
 (Add more as needed)
+
 
 ---
 
 ## 🧪 Test Cases
 
 ```python
-assert Solution().fn(...) == ...
-# Add diverse edge and normal cases
+sln = Solution()
+
+# Basic palindrome
+assert sln.isPalindrome("A man, a plan, a canal: Panama") == True
+
+# Not a palindrome
+assert sln.isPalindrome("race a car") == False
+
+# Empty string
+assert sln.isPalindrome("") == True
+
+# Only special characters
+assert sln.isPalindrome("!!!") == True
+
+# Palindrome with mixed cases and symbols
+assert sln.isPalindrome("No 'x' in Nixon") == True
+
+# One alphanumeric character
+assert sln.isPalindrome("Z") == True
+
+# Alphanumeric but not a palindrome
+assert sln.isPalindrome("0P") == False
 ```
+
 
 ---
 
 ## 🧱 Interview Walkthrough (CLEAN)
 
+---
+
 ### 🔍 1. Clarify
 
-- Assumptions, input/output, edge cases
+> 🧑‍💼: “Given a string `s`, return `True` if it is a palindrome — ignoring non-alphanumeric characters and case. Otherwise, return `False`.”
+
+**✅ Clarified Assumptions:**
+- Input may include letters, digits, spaces, punctuation.
+- Case should be ignored (e.g., 'A' == 'a').
+- Empty strings and strings with only symbols (like `"!!"`) should return `True` by definition.
+- Only ASCII characters (no Unicode or emojis).
+
+> Me: “Got it. So I'm checking whether the input is a palindrome when filtered down to only alphanumeric characters and ignoring casing. For example, `"A man, a plan, a canal: Panama"` should return `True`, correct?”
+
+> 🧑‍💼: “Exactly.”
+
+---
 
 ### 🔬 2. Examples
 
-- Provided + 1-2 of your own
+**🧪 Provided Example:**
+
+```python
+Input: "A man, a plan, a canal: Panama"
+Output: True
+```
+
+**🧪 Custom Example 1 (non-palindrome):**
+```python
+Input: "race a car"
+Output: False
+```
+
+**🧪 Custom Example 2 (edge case):**
+```python
+Input: "!!!"
+Output: True
+# Only symbols — after filtering it's empty, which counts as a palindrome.
+```
+
+**🧪 Custom Example 3:**
+```python
+Input: "0P"
+Output: False
+# '0' and 'P' are not equal
+```
+
+---
 
 ### 💡 3. Brainstorm
 
-- Naive vs optimized ideas
+**🪫 Brute Force Idea:**
+- Filter the string to keep only alphanumeric characters
+- Convert all characters to lowercase
+- Check if the filtered string is equal to its reverse
+
+**Time:** O(n)  
+**Space:** O(n) for new string
+
+**⚡ Optimized Idea (Two Pointer):**
+- Use two pointers: one from the start, one from the end
+- Skip non-alphanumeric characters
+- Compare lowercase versions of characters
+- Return False if any mismatch
+
+**Time:** O(n)  
+**Space:** O(1) extra (in-place comparison)
+
+> 🧑‍💼: “Which approach would you like to go with?”
+
+> Me: “Let me implement the brute force one first since it’s fast and readable. Then I’ll optimize to the two-pointer version for space efficiency.”
+
+---
 
 ### 🧰 4. Plan
 
-- Step-by-step breakdown before coding
+**Step-by-step:**
+
+**Brute Force Plan:**
+1. Create a list of lowercase characters from `s` where `c.isalnum()` is true.
+2. Compare that list to its reversed version.
+
+**Two Pointer Plan:**
+1. Initialize two indices: `l = 0`, `r = len(s) - 1`
+2. While `l < r`:
+   - Skip `s[l]` if not alphanumeric
+   - Skip `s[r]` if not alphanumeric
+   - Compare `s[l].lower()` to `s[r].lower()`
+   - If mismatch → return False
+   - Else → move inward
+3. If loop completes, return True
+
+---
 
 ### 🧠 5. Complexity
 
-- Time and space discussion
+| Approach       | Time       | Space      |
+|----------------|------------|------------|
+| Brute Force    | O(n)       | O(n)       |
+| Two Pointer    | O(n)       | O(1)       |
+
+- `n` is the length of the input string
+- Both scan every character at most once
+- Two-pointer is more memory-efficient since it avoids building a new string
+
+---
 
 ### ✅ 6. Wrap-up
 
-- Recap strengths, edge case coverage, invite follow-ups
+✅ The brute-force method is simple and readable for interviews.  
+✅ The two-pointer solution is optimal for space and demonstrates string parsing logic.  
+✅ Edge cases like empty strings, single characters, or only symbols are handled.  
+✅ The solution avoids using regex or libraries, sticking to core string methods.
 
----
+> Me: “Let me know if you'd like me to walk through another variant — like full Unicode handling or ignoring diacritics.”
 
-## ❌ Common Pitfalls
-
-- What people often get wrong
-- Subtle edge cases or traps
-
----
-
-## 📚 Glossary
-
-| Term          | Meaning |
-| ------------- | ------- |
-| Hash Map      | ...     |
-| Tuple         | ...     |
-| Min Heap      | ...     |
-| Frequency Map | ...     |
 
 
