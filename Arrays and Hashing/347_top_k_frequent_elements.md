@@ -6,24 +6,12 @@
 - [📄 Problem Statement](#-problem-statement)
 - [🔎 Approach 1: Hash Map + Sort](#-approach-1-hash-map--sort)
 - [⚙️ Approach 2: Hash Map + Min Heap](#-approach-2-hash-map--min-heap)
+- [🔢 Approach 3: Bucket Sort](#-approach-3-bucket-sort)
 - [📜 DSA Concepts Explained](#-dsa-concepts-explained)
 - [🧪 Test Cases](#-test-cases)
 - [🧱 Interview Walkthrough (CLEAN)](#-interview-walkthrough-clean)
 - [❌ Common Pitfalls](#-common-pitfalls)
 - [📜 Glossary](#-glossary)
-
----
-
-## 🧠 Summary
-
-- Return the `k` most frequent elements in an integer list.
-- ✅ Use a frequency map (hashmap) to count occurrences.
-- ✅ Two good approaches:
-  - **Sort all frequencies**, then grab top-k → clean but O(n log n)
-  - **Min heap of size **`` → avoids sorting everything, better for large `n`
-
-**Best Solution:** Hash Map + Min Heap\
-Efficient when `k` is small and input size is large.
 
 ---
 
@@ -37,91 +25,6 @@ Efficient when `k` is small and input size is large.
 
 - 1 <= nums.length <= 10⁵
 - 1 <= k <= number of unique elements
-
----
-
-## 🔎 Approach 1: Hash Map + Sort
-
-### 🧠 Idea (What’s Going On)
-
-- First, **count how often each number appears** using a dictionary (hashmap)
-- Store the results as `[frequency, number]` pairs in a list
-- **Sort the list** by frequency (ascending), then pop off the last `k` elements
-
-This is easy to understand and works fine if `n` isn’t too large.
-
----
-
-**Time Complexity:** `O(n log n)` — due to sorting\
-**Space Complexity:** `O(n)` — to store the frequency map and array
-
-```python
-class Solution:
-    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
-        # Step 1: Count frequencies
-        count = {}
-        for num in nums:
-            count[num] = 1 + count.get(num, 0)
-
-        # Step 2: Create list of [frequency, number] pairs
-        arr = []
-        for num, freq in count.items():
-            arr.append([freq, num])
-
-        # Step 3: Sort by frequency ascending
-        arr.sort()
-
-        # Step 4: Pop k most frequent
-        res = []
-        while len(res) < k:
-            res.append(arr.pop()[1])
-        return res
-```
-
-> 🧠 Tip: `[freq, num]` ensures sort is based on frequency first.
-
----
-
-## ⚙️ Approach 2: Hash Map + Min Heap
-
-### 🧠 Idea (What’s Going On)
-
-- Again, use a dictionary to **count frequencies**
-- Then use a **min heap of size **`` to track only the most frequent elements:
-  - Push `(frequency, number)` into the heap
-  - If the heap grows beyond size `k`, pop the least frequent
-- At the end, you’re left with the top `k`
-
-This avoids sorting the entire list — great for large datasets.
-
----
-
-**Time Complexity:** `O(k log n)`\
-**Space Complexity:** `O(n)`
-
-```python
-import heapq
-
-class Solution:
-    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
-        # Step 1: Frequency map
-        count = {}
-        for num in nums:
-            count[num] = 1 + count.get(num, 0)
-
-        # Step 2: Push (freq, num) to heap
-        heap = []
-        for num in count:
-            heapq.heappush(heap, (count[num], num))
-            if len(heap) > k:
-                heapq.heappop(heap)  # remove smallest freq
-
-        # Step 3: Extract results
-        res = []
-        while heap:
-            res.append(heapq.heappop(heap)[1])  # just the number
-        return res
-```
 
 ---
 
@@ -197,22 +100,23 @@ nums = [1,2,3,4], k = 2 → any 2 values
 - Brute force: sort + count — ❌ inefficient
 - Hashmap + sort — ✅ simple and works
 - Hashmap + heap — ✅ optimal if `k << n`
+- Bucket sort — ✅ O(n) time, best if k is large or we need linear time
 
 ### 🧱 4. Plan
 
 1. Count frequencies using a dict
-2. Push `(frequency, number)` into a min heap
-3. If heap > k, pop the smallest
-4. Extract numbers from heap
+2. (a) Sort + pop k (b) Heap with k-size (c) Bucket with freq index
+3. Extract top k
 
 ### 🧠 5. Complexity
 
-- Time: `O(n log k)`
-- Space: `O(n)`
+- Sort: O(n log n)
+- Heap: O(n log k)
+- Bucket: O(n)
 
 ### ✅ 6. Wrap-Up
 
-Used heap to avoid full sort and extract the top `k` most frequent efficiently.
+Each solution has its tradeoffs. Bucket sort gives linear time, heap gives memory-efficient top-k selection.
 
 ---
 
@@ -222,6 +126,7 @@ Used heap to avoid full sort and extract the top `k` most frequent efficiently.
 - Not understanding that `heapq` is a min heap by default
 - Forgetting to pop when heap size > k
 - Sorting all elements instead of tracking only `k`
+- Misusing bucket indices or forgetting max freq = len(nums)
 
 ---
 
