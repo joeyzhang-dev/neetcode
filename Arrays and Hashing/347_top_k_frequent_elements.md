@@ -15,6 +15,20 @@
 
 ---
 
+## 🧠 Summary
+
+- Return the `k` most frequent elements in an integer list.
+- ✅ Use a frequency map (hashmap) to count occurrences.
+- ✅ Three good approaches:
+  - **Sort all frequencies**, then grab top-k → clean but O(n log n)
+  - **Min heap of size **`` → avoids sorting everything, better for large `n`
+  - **Bucket sort** → best time complexity (O(n)) if frequency bounds are known
+
+**Best Solution:** Hash Map + Min Heap (most general-purpose)\
+**Most Optimal Time:** Bucket Sort (O(n)), but more specialized
+
+---
+
 ## 📄 Problem Statement
 
 [🔗 LeetCode 347](https://leetcode.com/problems/top-k-frequent-elements/)
@@ -28,115 +42,214 @@
 
 ---
 
+## 🔎 Approach 1: Hash Map + Sort
+
+**Time Complexity:** `O(n log n)` — due to sorting\
+**Space Complexity:** `O(n)` — to store the frequency map and array
+
+```python
+class Solution:
+    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+        # Step 1: Count frequencies
+        count = {}
+        for num in nums:
+            count[num] = 1 + count.get(num, 0)
+
+        # Step 2: Create list of [frequency, number] pairs
+        arr = []
+        for num, freq in count.items():
+            arr.append([freq, num])
+
+        # Step 3: Sort by frequency ascending
+        arr.sort()
+
+        # Step 4: Pop k most frequent
+        res = []
+        while len(res) < k:
+            res.append(arr.pop()[1])
+        return res
+```
+
+> 🧠 Tip: `[freq, num]` ensures sort is based on frequency first.
+
+---
+
+## ⚙️ Approach 2: Hash Map + Min Heap
+
+**Time Complexity:** `O(n log k)`\
+**Space Complexity:** `O(n)`
+
+```python
+import heapq
+
+class Solution:
+    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+        # Step 1: Frequency map
+        count = {}
+        for num in nums:
+            count[num] = 1 + count.get(num, 0)
+
+        # Step 2: Push (freq, num) to heap
+        heap = []
+        for num in count:
+            heapq.heappush(heap, (count[num], num))
+            if len(heap) > k:
+                heapq.heappop(heap)  # remove smallest freq
+
+        # Step 3: Extract results
+        res = []
+        while heap:
+            res.append(heapq.heappop(heap)[1])  # just the number
+        return res
+```
+
+---
+
+## 🔢 Approach 3: Bucket Sort
+
+**Time Complexity:** `O(n)`
+
+- Counting frequencies = O(n)
+- Building buckets = O(n)
+- Scanning buckets from high to low = O(n)
+
+**Space Complexity:** `O(n)`
+
+- Hashmap = O(n)
+- Buckets = O(n)
+- Output = O(k) ≤ O(n)
+
+```python
+class Solution:
+    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+        count = {}
+        freq = [[] for _ in range(len(nums) + 1)]
+
+        # Count frequencies
+        for num in nums:
+            count[num] = 1 + count.get(num, 0)
+
+        # Bucket elements by frequency
+        for num, cnt in count.items():
+            freq[cnt].append(num)
+
+        # Gather top k from highest frequency to lowest
+        res = []
+        for i in range(len(freq) - 1, 0, -1):
+            for num in freq[i]:
+                res.append(num)
+                if len(res) == k:
+                    return res
+```
+
+### 🔬 Visualization
+
+**Input:** `nums = [1,1,1,2,2,3]`, `k = 2`
+
+**Frequency Map:**
+
+```python
+{
+  1: 3,
+  2: 2,
+  3: 1
+}
+```
+
+**Buckets (index = frequency):**
+
+```python
+[
+  [],        # freq 0 (unused)
+  [3],       # freq 1
+  [2],       # freq 2
+  [1]        # freq 3
+]
+```
+
+Start from end and collect top k → `[1, 2]`
+
+---
+
 ## 📜 DSA Concepts Explained
 
-A data structure that stores key-value pairs. Example: `{num: frequency}`.
+Stores key-value pairs like `{element: frequency}`. Useful for counting occurrences efficiently in O(1) average time per insert.
 
-```python
-count[num] = 1 + count.get(num, 0)
-```
+A priority queue where the smallest element is always at the top. Used here to keep track of the top `k` frequent elements efficiently.
 
-This line increments the frequency if it exists, otherwise sets it to 1.
-
-A binary heap where the smallest value stays at the top.
-
-In this problem, we push `(frequency, number)` pairs into the heap:
-
-```python
-heapq.heappush(heap, (freq, num))
-heapq.heappop(heap)
-```
-
-📊 **Heap Growth Example:**\
-For input `nums = [1,1,1,2,2,3]`, `k = 2`
-
-Step-by-step heap state:
-
-```text
-Push (3, 1):         [(3, 1)]
-Push (2, 2):         [(2, 2), (3, 1)]
-Push (1, 3):         [(1, 3), (3, 1), (2, 2)]
-→ size > 2 → pop (1, 3)
-
-Final heap:          [(2, 2), (3, 1)]
-```
-
-🧠 This keeps only the top `k` frequent elements.
-
-- Tuples use parentheses: `(a, b)`
-- Lists use brackets: `[a, b]`\
-  Tuples are used in heaps because they’re immutable and sort element-wise.
+Instead of sorting or maintaining a heap, we use a list of lists (buckets) where the index represents frequency. It's efficient when frequencies are bounded.
 
 ---
 
 ## 🧪 Test Cases
 
 ```python
-assert set(Solution().topKFrequent([1,1,1,2,2,3], 2)) == set([1,2])
+assert set(Solution().topKFrequent([1,1,1,2,2,3], 2)) == {1, 2}
 assert Solution().topKFrequent([1], 1) == [1]
-assert set(Solution().topKFrequent([4,4,4,4,5,5,5,6,6], 2)) == set([4,5])
+assert set(Solution().topKFrequent([4,4,4,5,5,6], 2)) == {4, 5}
+assert set(Solution().topKFrequent([5,7,5,7,5,7,8], 2)) == {5, 7}
 ```
 
 ---
 
 ## 🧱 Interview Walkthrough (CLEAN)
 
-### 🔍 1. Clarify
+### 🔍 1. Clarify and Understand the Problem
 
-- ✅ k is valid and ≤ number of unique elements
-- ✅ Return order doesn’t matter
-- ✅ nums may contain duplicates
+- ✅ Input is a list of integers
+- ✅ `k` is guaranteed to be valid (≤ number of unique elements)
+- ✅ Return order does not matter
 
-### 🔬 2. Examples
+### 🔬 2. Examples & Edge Cases
 
 ```python
-nums = [1,1,1,2,2,3], k = 2 → [1,2]
-nums = [1], k = 1 → [1]
-nums = [1,2,3,4], k = 2 → any 2 values
+Input: [1,1,1,2,2,3], k = 2 → Output: [1,2] or [2,1]
+Input: [1], k = 1 → Output: [1]
+Input: [1,2,3,4,5], k = 3 → Output: any 3 distinct values
 ```
 
-### 💡 3. Brainstorm
+### 💡 3. Brainstorm Solutions
 
-- Brute force: sort + count — ❌ inefficient
-- Hashmap + sort — ✅ simple and works
-- Hashmap + heap — ✅ optimal if `k << n`
-- Bucket sort — ✅ O(n) time, best if k is large or we need linear time
+- Brute force: Count then sort → O(n log n)
+- Min heap: Track top k in O(n log k)
+- Bucket sort: Group by frequency index → O(n) if frequency range is bounded
 
-### 🧱 4. Plan
+### 🧱 4. Implementation Plan
 
-1. Count frequencies using a dict
-2. (a) Sort + pop k (b) Heap with k-size (c) Bucket with freq index
-3. Extract top k
+1. Count frequencies using a dictionary
+2. Apply sorting, heap, or bucket logic
+3. Extract top k frequent elements
 
-### 🧠 5. Complexity
+### 🧠 5. Code Complexity Analysis
 
 - Sort: O(n log n)
 - Heap: O(n log k)
 - Bucket: O(n)
+- Space: All are O(n) due to frequency map and output
 
-### ✅ 6. Wrap-Up
+### 🔍 6. Final Review & Wrap-Up
 
-Each solution has its tradeoffs. Bucket sort gives linear time, heap gives memory-efficient top-k selection.
+✅ Covered multiple solutions with tradeoffs\
+✅ Handled edge cases and verified correctness
 
 ---
 
 ## ❌ Common Pitfalls
 
-- Confusing tuple `(1, 3)` with list `[1, 3]`
-- Not understanding that `heapq` is a min heap by default
-- Forgetting to pop when heap size > k
-- Sorting all elements instead of tracking only `k`
-- Misusing bucket indices or forgetting max freq = len(nums)
+- ❗ Forgetting that `heapq` in Python is a min heap by default
+- ❗ Confusing tuple vs list when pushing into the heap: `(freq, num)` not `[freq, num]`
+- ❗ Not scanning the bucket array in reverse (from high frequency to low)
+- ❗ Assuming the result has to be in a specific order (it doesn't)
 
 ---
 
 ## 📜 Glossary
 
-| Term                | Meaning                                              |
-| ------------------- | ---------------------------------------------------- |
-| Hash Map / Dict     | Stores key-value pairs, like `{3: 2}` for num → freq |
-| Min Heap            | Priority queue where smallest value stays on top     |
-| Tuple `(a, b)`      | Immutable pair of values, used in heap comparison    |
-| Frequency Map       | Another term for `count` dictionary                  |
-| `get(key, default)` | Returns the value for `key`, or `default` if missing |
+| Term             | Definition                                                   |
+| ---------------- | ------------------------------------------------------------ |
+| Hash Map         | A key-value store for counting or lookups in O(1) avg time   |
+| Min Heap         | A binary heap where the root is the smallest element         |
+| Bucket Sort      | A sorting technique using a frequency-indexed array of lists |
+| Time Complexity  | An estimate of algorithm speed using Big-O notation          |
+| Space Complexity | An estimate of memory usage growth in terms of input size    |
 
