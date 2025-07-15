@@ -76,6 +76,112 @@ class Solution:
 
 > 🧠 Checks characters on-the-fly without creating new strings — this is optimal for large or streamed input.
 
+### 🔁 Two Pointer Diagram Walkthrough
+
+Input:  
+```
+"A man, a plan, a canal: Panama"
+```
+
+We'll show the positions of the left (`^`) and right (`^`) pointers at each step:
+
+---
+
+#### Step 1: Compare 'A' and 'a' ✅
+```
+A man, a plan, a canal: Panama
+^                             ^
+l                             r
+```
+
+---
+
+#### Step 2: Skip ' '  
+```
+A man, a plan, a canal: Panama
+  ^                           ^
+  l                           r
+```
+
+#### Step 3: Compare 'm' and 'm' ✅
+```
+A man, a plan, a canal: Panama
+  ^                         ^
+  l                         r
+```
+
+---
+
+#### Step 4: Compare 'a' and 'a' ✅
+```
+A man, a plan, a canal: Panama
+    ^                     ^
+    l                     r
+```
+
+---
+
+#### Step 5: Compare 'n' and 'n' ✅
+```
+A man, a plan, a canal: Panama
+     ^                 ^
+     l                 r
+```
+
+---
+
+#### Step 6: Skip ',' and ' '  
+```
+A man, a plan, a canal: Panama
+        ^           ^       
+        l           r
+```
+
+#### Step 7: Compare 'a' and 'a' ✅
+```
+A man, a plan, a canal: Panama
+        ^         ^
+        l         r
+```
+
+---
+
+#### Step 8: Compare 'p' and 'p' ✅
+```
+A man, a plan, a canal: Panama
+         ^       ^
+         l       r
+```
+
+---
+
+#### Step 9: Compare 'l' and 'l' ✅
+```
+A man, a plan, a canal: Panama
+           ^   ^
+           l   r
+```
+
+---
+
+#### Step 10: Compare 'a' and 'a' ✅
+```
+A man, a plan, a canal: Panama
+            ^ ^
+            l r
+```
+
+---
+
+#### Pointers Cross → Done ✅  
+Every comparison matched → `True` ✅
+
+---
+
+> 🧠 This shows how the two-pointer method compares only valid alphanumerics and skips everything else — case-insensitively.
+
+
+
 ## 📚 DSA Concepts Explained
 
 (Add more as needed)
