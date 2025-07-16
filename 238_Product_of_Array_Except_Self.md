@@ -1,4 +1,4 @@
-```md
+
 ## Summary
 - Return an array where each element is the product of all elements in the input array except itself.
 - Division is **not allowed**, and a brute force approach leads to `O(n^2)` time complexity.
