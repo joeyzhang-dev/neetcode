@@ -196,3 +196,96 @@ Explanation: Each number is the product of all other numbers.
 > 🧠 Elegant and efficient. Avoids division and handles edge cases like zeros gracefully. This is the ideal approach for interviews.
 
 ```
+
+---
+
+## 📊 Visual Intuition: Prefix + Postfix Diagram
+
+Let’s walk through the optimized approach on the input:
+
+```python
+nums = [1, 2, 3, 4]
+```
+
+### 🔁 Step 1: Prefix Pass (Left to Right)
+
+We’ll build an intermediate result by storing the **product of all elements before each index**.
+
+Initialize:
+
+```
+answer = [1, 1, 1, 1]
+prefix = 1
+```
+
+Iterate:
+
+| i | nums[i] | answer[i] = prefix | update prefix → prefix *= nums[i] |
+|---|---------|--------------------|----------------------------------|
+| 0 |    1    |         1          |         prefix = 1 × 1 = 1       |
+| 1 |    2    |         1          |         prefix = 1 × 2 = 2       |
+| 2 |    3    |         2          |         prefix = 2 × 3 = 6       |
+| 3 |    4    |         6          |         prefix = 6 × 4 = 24      |
+
+🔎 After prefix pass:
+
+```python
+answer = [1, 1, 2, 6]
+```
+
+Each index holds the **product of all elements to its left**.
+
+---
+
+### 🔁 Step 2: Postfix Pass (Right to Left)
+
+Now we multiply by the **product of all elements after each index**.
+
+Initialize:
+
+```
+postfix = 1
+```
+
+Iterate in reverse:
+
+| i | nums[i] | answer[i] *= postfix | update postfix → postfix *= nums[i] |
+|---|---------|----------------------|------------------------------------|
+| 3 |    4    |      6 × 1 = 6       |        postfix = 1 × 4 = 4         |
+| 2 |    3    |      2 × 4 = 8       |        postfix = 4 × 3 = 12        |
+| 1 |    2    |      1 × 12 = 12     |        postfix = 12 × 2 = 24       |
+| 0 |    1    |      1 × 24 = 24     |        postfix = 24 × 1 = 24       |
+
+🔎 Final output:
+
+```python
+answer = [24, 12, 8, 6]
+```
+
+---
+
+## 🧠 Why This Works
+
+- For index `i`, we split the product into:
+  - All elements **before** → prefix
+  - All elements **after** → postfix
+- By doing 2 passes, we compute both without ever including `nums[i]` in the multiplication.
+- This avoids division, handles zeros safely, and runs in linear time.
+
+✅ Clean  
+✅ Constant extra space  
+✅ No edge case hacks
+
+---
+
+## 🔁 Visualization Recap
+
+```
+nums   = [1, 2, 3, 4]
+prefix = [1, 1, 2, 6]      ← left products (excluding current)
+postfx = [24,12, 4, 1]     ← right products (excluding current)
+result = [24,12, 8, 6]     ← element-wise: prefix[i] * postfix[i]
+```
+
+This approach builds intuition for **building up** and then **folding down** through the array — a powerful pattern for many array problems.
+
