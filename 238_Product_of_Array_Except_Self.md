@@ -1,11 +1,10 @@
-
 ## Summary
 - Return an array where each element is the product of all elements in the input array except itself.
-- Division is **not allowed**, and a brute force approach leads to `O(n^2)` time complexity.
-- This initial solution is meant to verify correctness and explore problem structure.
+- Division is **not allowed**, and the goal is to solve in `O(n)` time and `O(1)` space (excluding the output).
+- Brute force works but is inefficient. Prefix and Postfix products yield a clean, optimal solution.
 
-**Best Solution:** Brute Force (Initial Pass)  
-- Iterate through all elements, skipping the current index, and compute the product manually.
+**Best Solution:** Prefix + Postfix Product  
+- Build output by first storing prefix products, then multiplying by postfix products in a second pass.
 
 ---
 
@@ -16,7 +15,7 @@
 - Product of all elements fits in a 32-bit integer  
 - Division is not allowed
 
-> 💡 Compute the product of all array elements except for the current one.
+> 💡 For each index, compute product of all elements except the one at that index, without using division.
 
 ---
 
@@ -33,15 +32,6 @@ class Solution(object):
         :type nums: List[int]
         :rtype: List[int]
         """
-        # Given:
-            # nums : arr[int] - at least 2 elements
-        # Return:
-            # answer : arr[int] - answer[i] = product of all elements except nums[i]
-
-        # Brute force: 
-            # Time O(n^2) | Space O(n)
-            # We evaluate each index i and skip it while computing the product
-
         n = len(nums)
         answer = [0] * n
         for i in range(n):
@@ -55,4 +45,47 @@ class Solution(object):
 ```
 
 > 🧠 Useful for understanding the problem but too slow for large inputs. Sets the stage for thinking about prefix/suffix strategies.
+
+---
+
+### Approach 2: Prefix and Postfix (Optimized)
+**Time Complexity:** `O(n)`  
+**Space Complexity:** `O(1)` (output array not counted)  
+**Idea:**  
+Use two passes:  
+- 1st pass: store prefix product at each index  
+- 2nd pass: multiply current value by postfix product
+
+```python
+class Solution(object):
+    def productExceptSelf(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[int]
+        """
+        # Example: nums = [1, 2, 3, 4]
+        # Prefix pass:
+        # answer = [1, 1, 2, 6]
+        # Postfix pass:
+        # answer = [24, 12, 8, 6]
+
+        answer = [1] * len(nums)
+
+        # Build prefix products
+        prefix = 1
+        for i in range(len(nums)):
+            answer[i] = prefix
+            prefix *= nums[i]
+
+        # Multiply by postfix products
+        postfix = 1
+        for i in range(len(nums) - 1, -1, -1):
+            answer[i] *= postfix
+            postfix *= nums[i]
+
+        return answer
+```
+
+> 🧠 Elegant and efficient. Avoids division and handles edge cases like zeros gracefully. This is the ideal approach for interviews.
+
 ```
