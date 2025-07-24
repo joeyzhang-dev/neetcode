@@ -21,7 +21,7 @@
 
 ### Approach 1: Brute Force
 **Time Complexity:** `O(n^2)`  
-**Space Complexity:** `O(n)`  
+**Space Complexity:** `O(1) and O(n) if counting answer array`  
 **Idea:**  
 For each element, iterate through the array and multiply every value except the one at the current index.
 
